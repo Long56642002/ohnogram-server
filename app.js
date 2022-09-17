@@ -23,6 +23,7 @@ app.use(express.json())
 //get models
 require('./models/user')
 require('./models/post')
+app.use("/api/user", require('./routes/userRoutes'))
 
 app.use("/test",(req,res)=>{
     res.send("Test api")

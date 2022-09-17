@@ -1,5 +1,23 @@
 const mongoose = require("mongoose")
+const bcrypt = require("bcrypt")
 const User = mongoose.model("User")
+
+exports.getAllUsers = (req,res) => {
+    User.find().then((user)=>{
+        res.status(200).json({
+            data:{
+                message:"successfully",
+                data:user
+            }
+        })
+    }).catch(err=>{
+        return res.status(422).json({
+            data:{
+                message:err
+            }
+        })
+    })
+}
 
 exports.signUp = (req,res) => {
     const {displayname, email, password} = req.body
@@ -17,25 +35,35 @@ exports.signUp = (req,res) => {
             }
         })
     }
-    User.findOne(email).then((existUser)=>{
+    User.findOne({email:email}).then((existUser)=>{
         if (existUser) {
-            return res.status(422).json({
+            return res.status(409).json({
                 data:{
                     message:"This email is already used"
                 }
             })
         }
-        const user = new User({
-            displayname,
-            email,
-            password
-        })
-        user.save()
-        .then(user=>{
-            res.status(200).json({
-                data:{
-                    message:"Create account successfully!"
-                }
+        bcrypt.hash(password, 12)
+        .then(hashedPassword => {
+            const user = new User({
+                displayname,
+                email,
+                password:hashedPassword
+            })
+            user.save()
+            .then(user=>{
+                res.status(200).json({
+                    data:{
+                        message:"Create account successfully!"
+                    }
+                })
+            }).catch(err=>{
+                console.log(err.message);
+                res.status(500).json({
+                    data:{
+                        message:err.message
+                    }
+                })
             })
         }).catch(err=>{
             console.log(err.message);
