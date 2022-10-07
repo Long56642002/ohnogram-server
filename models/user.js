@@ -4,6 +4,7 @@ const UserSchema = new mongoose.Schema({
     displayname: {
         type:String,
         require:true,
+        trim:true
     },
     avatar: {
         type:String,
@@ -16,11 +17,13 @@ const UserSchema = new mongoose.Schema({
     email: {
         type:String,
         unique:true,
-        require:true
+        require:true,
+        trim:true
     },
     password: {
         type:String,
-        require:true
+        require:true,
+        trim:true
     },
     followers:[{
         type:ObjectId,

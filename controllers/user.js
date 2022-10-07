@@ -19,7 +19,7 @@ exports.getAllUsers = (req,res) => {
     })
 }
 
-exports.signUp = (req,res) => {
+exports.signUp = async (req,res) => {
     const {displayname, email, password} = req.body
     if (!displayname || !email || !password) {
         return res.status(422).json({
